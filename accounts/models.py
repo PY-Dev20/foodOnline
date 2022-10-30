@@ -1,9 +1,9 @@
-from operator import truediv
-from site import USER_BASE
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.db.models.signals import post_save 
-from django.dispatch import receiver
+from django.db.models.fields.related import OneToOneField
+
+
+
 
 
 
@@ -18,9 +18,9 @@ class UserManager(BaseUserManager):
         
         user = self.model(
             email= self.normalize_email(email),
-            username=username,
-            first_name=first_name, 
-            last_name=last_name,
+            username = username,
+            first_name = first_name, 
+            last_name = last_name,
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -58,6 +58,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(max_length=100, unique=True)
     phone_number = models.CharField(max_length=12, blank=True)
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICE, blank=True, null=True)
+ 
     
     #required fields
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -75,7 +76,7 @@ class User(AbstractBaseUser):
     
     objects = UserManager()
     
-    def _str_(self):
+    def __str__(self):
         return self.email
     
     def has_perm(self, perm, obj=None):
@@ -85,13 +86,12 @@ class User(AbstractBaseUser):
     
     
     
-class UserProfile(models.Model):  
-        
-    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)    
-    profile_picture = models.ImageField(upload_to='user/profile_picture', blank=True, null=True)
-    cover_photo = models.ImageField(upload_to='user/cover_photo', blank=True, null=True)    
-    address_line_1 = models.CharField(max_length=50, blank=True, null=True)
-    address_line_2 = models.CharField(max_length=50, blank=True, null=True)
+class UserProfile(models.Model):
+    user = OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='users/profile_pictures', blank=True, null=True)
+    cover_photo = models.ImageField(upload_to='users/cover_photos', blank=True, null=True)
+    address_line_1 = models.CharField(max_length=250, blank=True, null=True)
+    address_line_2 = models.CharField(max_length=250, blank=True, null=True)
     country = models.CharField(max_length=15, blank=True, null=True)
     state = models.CharField(max_length=15, blank=True, null=True)
     city = models.CharField(max_length=15, blank=True, null=True)
@@ -101,23 +101,6 @@ class UserProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
         
-    def _str_(self):
+ 
+    def __str__(self):
         return self.user.email
-    
-@receiver(post_save, sender=User)
-def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
-        print('user created successfully')
-    else:
-        try:
-            profile = UserProfile.objects.get(user=instance)
-            profile.save()
-        except:
-            #Create the UserProfile id Does Not Exist
-            UserProfile.objects.create(user=instance)
-            
-        print('updated profile')
-
-      
-# post_save.connect(post_save_create_profile_receiver, sender =User)
