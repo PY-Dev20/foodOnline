@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'vendor',
     "verify_email.apps.VerifyEmailConfig",
     'menu',
+    'marketplace',
     
     
     
