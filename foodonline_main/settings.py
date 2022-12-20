@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-import os
 from decouple import config
+import os
+from django import conf
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,10 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
+  
     'vendor',
-    "verify_email.apps.VerifyEmailConfig",
     'menu',
     'marketplace',
+    'django.contrib.gis',
     
     
     
@@ -76,7 +79,8 @@ TEMPLATES = [
                 'accounts.context_processors.get_vendor',
                 'accounts.context_processors.get_google_api',
                 'marketplace.context_processors.get_cart_counter',
-                #'marketplace.context_processors.get_cart_amounts',
+                'marketplace.context_processors.get_cart_amounts',
+                'accounts.context_processors.get_user_profile',
                 
                 
             ],
@@ -92,7 +96,8 @@ WSGI_APPLICATION = 'foodonline_main.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        # 'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': config('DB_NAME'),
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
@@ -167,7 +172,10 @@ EMAIL_USE_TLS = True
 
 DEFAULT_FROM_EMAIL = 'foodOnline Marketplace <chrisedancy122@gmail.com>'
 
-GOOGLE_API_KEY = config('GOOGLE_API_KEY')
+GOOGLE_API_KEY = 'AIzaSyA05aTmbzgR76WB_lMZvkEYgl264OvwBv4'
 
-
+if DEBUG == True:
+    os.environ['PATH'] = os.path.join(BASE_DIR, 'F:\Projects\env\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
+    os.environ['PROJ_LIB'] = os.path.join(BASE_DIR, 'F:\Projects\env\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
+    GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'F:\Projects\env\Lib\site-packages\osgeo\gdal304.dll')
 
