@@ -1,3 +1,18 @@
+function iniMap(){
+    let location = new object();
+    navigator.geolocation/getCurrentPosition(function(pos){
+           location.lat =pos.coords.latitude;
+           location.lon = pos.coords.longitude;
+           map = new google.maps.Map(document.getElementById
+           ('map'),{
+            center: {lat: location.lat, lng: location.long},
+            zoom: 15,
+            disableDefaultUI: true
+        });
+    });
+}
+
+//---------------------------------------
 let autocomplete;
 
 function initAutoComplete(){
@@ -6,7 +21,7 @@ autocomplete = new google.maps.places.Autocomplete(
     {
         types: ['geocode', 'establishment'],
         //default in this app is "IN" - add your country code
-        componentRestrictions: {'country': ['ae']},
+        componentRestrictions: {'country': ['AE', 'US','IN']},
     })
 // function to specify what should happen when the prediction is clicked
 autocomplete.addListener('place_changed', onPlaceChanged);
