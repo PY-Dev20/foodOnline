@@ -1,4 +1,3 @@
-# Support me here if you liked this! 
 
 Django Multi-Vendor Restaurant Marketplace 🍔🍟
 This project-based course offers you the opportunity to learn Django web development by creating a complete multi-vendor restaurant marketplace website. The website features location-based search functionality, the ability to find nearby restaurants, and various other complex features.
